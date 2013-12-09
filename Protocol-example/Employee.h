@@ -11,6 +11,7 @@
 @protocol EmployeeInterface <NSObject>
 -(int)getPayRate;
 -(int)getPayDay;
+-(NSString*)getType;
 @end
 
 typedef enum{

@@ -17,6 +17,16 @@
 
 -(int)getPayDay
 {
-    return 1200;
+    return [self getPayRate]/[self payPeriods];
+}
+
+-(int)payPeriods
+{
+    return 24;
+}
+
+-(NSString *)getType
+{
+    return @"Salary";
 }
 @end

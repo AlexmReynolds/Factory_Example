@@ -7,19 +7,20 @@
 //
 
 #import "ViewController.h"
+#import "DetailViewController.h"
 #import "Employee.h"
 @interface ViewController (){
-    id <EmployeeInterface>employee;
+    NSArray *_employees;
 }
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
-@property (weak, nonatomic) IBOutlet UILabel *rate;
-@property (weak, nonatomic) IBOutlet UILabel *payday;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad
 {
+    _employees = @[];
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 }
@@ -30,22 +31,61 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)showHourly:(id)sender {
-    employee = [Employee makeEmployeeType:HourlyType];
-    
-    [self updateLabelsForRate:[employee getPayRate] andPay:[employee getPayDay]];
+- (IBAction)makeHourly:(id)sender {
+    id employee = [Employee makeEmployeeType:HourlyType];
+    [self addEmployee:employee];
 }
 
-- (IBAction)showSalary:(id)sender {
-    employee = [Employee makeEmployeeType:SalaryType];
-    
-    [self updateLabelsForRate:[employee getPayRate] andPay:[employee getPayDay]];
-    
+- (IBAction)makeSalary:(id)sender {
+    id employee = [Employee makeEmployeeType:SalaryType];
+    [self addEmployee:employee];
 }
 
--(void)updateLabelsForRate:(int)rate andPay:(int)pay
+
+-(void)addEmployee:(id)employee
 {
-    self.rate.text = [NSString stringWithFormat:@"%i",rate];
-    self.payday.text = [NSString stringWithFormat:@"%i",pay];
+    _employees = [_employees arrayByAddingObject:employee];
+    [self.tableView reloadData];
+}
+
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _employees.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"identifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    id<EmployeeInterface> employee = [_employees objectAtIndex:indexPath.row];
+    cell.textLabel.text = [employee getType];
+    return  cell;
+}
+
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSMutableArray *temp = [NSMutableArray arrayWithArray:_employees];
+    [temp removeObjectAtIndex:indexPath.row];
+    _employees = temp;
+    [self.tableView beginUpdates];
+    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView endUpdates];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    DetailViewController *vc = segue.destinationViewController;
+    vc.employee = [_employees objectAtIndex:[self.tableView indexPathForSelectedRow].row];
 }
 @end

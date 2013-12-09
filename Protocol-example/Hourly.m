@@ -17,6 +17,15 @@
 
 -(int)getPayDay
 {
-    return 800;
+    return [self getPayRate]*[self hoursWorked];
+}
+
+-(int)hoursWorked
+{
+    return 24;
+}
+-(NSString *)getType
+{
+    return @"Hourly";
 }
 @end
