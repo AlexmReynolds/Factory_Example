@@ -63,7 +63,7 @@
     static NSString *CellIdentifier = @"identifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    id<EmployeeInterface> employee = [_employees objectAtIndex:indexPath.row];
+    id employee = [_employees objectAtIndex:indexPath.row];
     cell.textLabel.text = [employee getType];
     return  cell;
 }

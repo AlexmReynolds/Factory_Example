@@ -11,6 +11,6 @@
 
 @interface DetailViewController : UIViewController
 
-@property (nonatomic, strong) id<EmployeeInterface> employee;
+@property (nonatomic, strong) id employee;
 
 @end
